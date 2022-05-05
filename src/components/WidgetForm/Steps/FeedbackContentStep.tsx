@@ -2,6 +2,7 @@ import { ArrowLeft } from 'phosphor-react';
 import { FormEvent, useState } from 'react';
 import { FeedBackType, feedbackTypes } from '..';
 import { CloseButton } from '../../CloseButton';
+import { ScreenshotButton } from '../ScreenshotButton';
 
 interface FeedbackContentStepProps {
     feedbackType: FeedBackType;
@@ -10,13 +11,12 @@ interface FeedbackContentStepProps {
 }
 
 export function FeedbackContentStep({feedbackType, onFeedbackRestartRequested, onFeedbackSent}: FeedbackContentStepProps){
+    const [screenshot, setScreenshot] = useState<string | null>(null);
     const feedbackTypeInfo = feedbackTypes[feedbackType];
-    
     const [comment, setComment] = useState('');
 
     function handleSubmitFeedback(event: FormEvent){
         event.preventDefault();
-
         onFeedbackSent()
     }
 
@@ -31,12 +31,10 @@ export function FeedbackContentStep({feedbackType, onFeedbackRestartRequested, o
                 >
                     <ArrowLeft weight='bold' className='w-4 h-4'/>
                 </button>
-
                 <span className='text-xl leading-6 flex items-center gap-2'>
                     <img src={feedbackTypeInfo.image.source} alt={feedbackTypeInfo.image.alt} className='w-6 h-6' />
                     {feedbackTypeInfo.title}
                 </span>
-
                 <CloseButton />
             </header>
             <form onSubmit={handleSubmitFeedback} className='my-4 w-full'>
@@ -46,6 +44,10 @@ export function FeedbackContentStep({feedbackType, onFeedbackRestartRequested, o
                     onChange={event => setComment(event.target.value)}
                 />
                 <footer className='flex gap-2 mt-2'>
+                    <ScreenshotButton
+                        screenshot={screenshot}
+                        onScreenshotTook={setScreenshot}
+                    />
                     <button
                         type='submit'
                         disabled={comment.length === 0}
